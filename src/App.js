@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import "./App.css";
 function App() {
   const [loading, setLoading] = useState(true);
   const [rate, setRate] = useState(1);
@@ -32,27 +32,52 @@ function App() {
         setLoading(false);
       });
   }, [from]);
+
   return (
-    <div>
+    <div className="main">
       <h1>환율 계산기</h1>
-      <h3>기준 통화 선택</h3>
-      <select value={from} onChange={fromChange}>
-        <option value="USD">미국 달러 (USD)</option>
-        <option value="EUR">유로 (EUR)</option>
-        <option value="GBP">영국 파운드 (GBP)</option>
-        <option value="AUD">호주 (AUD)</option>
-        <option value="JPY">일본 엔 (JPY)</option>
-        <option value="CNY">중국 위안 (GBP)</option>
-      </select>
-      <input type="text" value={amount} onChange={amountChange}></input>
-      <span> {calculatedAmount}</span>
-      <span>
-        {loading ? (
-          <p>로딩 중...</p>
-        ) : (
-          <h2>{(calculatedAmount * rate).toFixed(2)} 원</h2>
-        )}
-      </span>
+
+      <div className="cal">
+        <div className="cal-row">
+          <span>기준 통화 선택</span>
+          <select value={from} onChange={fromChange}>
+            <option value="USD">미국 달러 (USD)</option>
+            <option value="EUR">유로 (EUR)</option>
+            <option value="GBP">영국 파운드 (GBP)</option>
+            <option value="AUD">호주 (AUD)</option>
+            <option value="JPY">일본 엔 (JPY)</option>
+            <option value="CNY">중국 위안 (CNY)</option>
+          </select>
+        </div>
+
+        <div className="cal-row">
+          <div className="input-group">
+            <span>{from} 입력:</span>
+            <input
+              type="text"
+              value={amount}
+              onChange={amountChange}
+              placeholder="금액 입력"
+            />
+          </div>
+          <p className="helper-text">
+            * 사칙연산 입력이 가능합니다. (예: 10+20)
+          </p>
+        </div>
+
+        <hr className="divider" />
+
+        <div className="calc-result">
+          <span className="from-amount">
+            {calculatedAmount.toLocaleString()} {from}
+          </span>
+          <span className="to-amount">
+            {loading
+              ? "변환 중..."
+              : `= ${(calculatedAmount * rate).toLocaleString(undefined, { minimumFractionDigits: 2 })} 원`}
+          </span>
+        </div>
+      </div>
     </div>
   );
 }
