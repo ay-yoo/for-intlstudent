@@ -23,17 +23,38 @@ function Table() {
     makeSchool("B school", "KOREA"),
     makeSchool("C school", "UK"),
   ]);
-
+  //학교 삭제 시 실행
   const onDelete = (id) => {
-    //학교 삭제 시 실행
     setSchools((prev) => prev.filter((s) => s.id !== id));
     console.log(schools);
   };
-
+  //학교 순위별 정렬
   const sortedSchools = useMemo(() => {
-    //학교 순위별 정렬
     return [...schools].sort((a, b) => a.rank - b.rank);
   }, [schools]);
+  //기본정보 수정
+  const updateBasic = (id, field, value) => {
+    setSchools((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
+    );
+  };
+  //field 수정
+  const updateField = (id, field, value) => {
+    setSchools((prev) =>
+      prev.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              fields: {
+                ...s.fields,
+                [field]: value,
+              },
+            }
+          : s,
+      ),
+    );
+    console.log(schools);
+  };
   return (
     <div>
       <h1>희망학교 리스트</h1>
@@ -65,8 +86,23 @@ function Table() {
                 <td>{s.fields.otherSchool}</td>
                 <td>{s.fields.weather}</td>
                 <td>{s.fields.walkscore}</td>
-                <td>{s.fields.website}</td>
-                <td>{s.fields.memo}</td>
+                <td>
+                  <input
+                    type="text"
+                    value={s.fields.website}
+                    onChange={(e) =>
+                      updateField(s.id, "website", e.target.value)
+                    }
+                  />
+                </td>
+
+                <td>
+                  <input
+                    type="text"
+                    value={s.fields.memo}
+                    onChange={(e) => updateField(s.id, "memo", e.target.value)}
+                  />
+                </td>
                 <td>
                   <button onClick={() => onDelete(s.id)}>삭제</button>
                 </td>
