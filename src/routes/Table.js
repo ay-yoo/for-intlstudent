@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMemo } from "react";
+import Modal from "../components/Modal";
+import AddModal from "../components/AddModal";
 
 const makeSchool = (name, nation, rank = 1) => ({
   id: crypto.randomUUID(),
@@ -18,16 +20,32 @@ const makeSchool = (name, nation, rank = 1) => ({
 });
 
 function Table() {
+  //*STATE*//
   const [schools, setSchools] = useState([
     makeSchool("A school", "USA"),
     makeSchool("B school", "KOREA"),
     makeSchool("C school", "UK"),
   ]);
+  //학교 추가 모달 state
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [addName, setAddName] = useState(""); // 학교명
+  const [addNation, setAddNation] = useState("USA"); // 국가
+
+  //*FUNCTION*//
+  //학교 추가 클릭시 실행
+  const onAddOpen = () => setIsAddOpen(true);
+
+  //모달 닫을때 실행
+  const onAddClose = () => {
+    setIsAddOpen(false);
+  };
+
   //학교 삭제 시 실행
   const onDelete = (id) => {
     setSchools((prev) => prev.filter((s) => s.id !== id));
     console.log(schools);
   };
+
   //학교 순위별 정렬
   const sortedSchools = useMemo(() => {
     return [...schools].sort((a, b) => a.rank - b.rank);
@@ -55,6 +73,7 @@ function Table() {
     );
     console.log(schools);
   };
+
   return (
     <div>
       <h1>희망학교 리스트</h1>
@@ -82,7 +101,7 @@ function Table() {
                 <td>{s.rank}</td>
                 <td>{s.name}</td>
                 <td>{s.fields.nation}</td>
-                <td>{s.fields.sizw}</td>
+                <td>{s.fields.size}</td>
                 <td>{s.fields.otherSchool}</td>
                 <td>{s.fields.weather}</td>
                 <td>{s.fields.walkscore}</td>
@@ -110,6 +129,20 @@ function Table() {
             ))}
           </tbody>
         </table>
+        <button onClick={() => onAddOpen()}>학교 추가하기</button>
+        <Modal
+          isOpen={isAddOpen}
+          title="학교 추가"
+          onClose={onAddClose}
+          children={
+            <AddModal
+              addNation={addNation}
+              setAddNation={setAddNation}
+              addName={addName}
+              setAddName={setAddName}
+            />
+          }
+        />
       </div>
     </div>
   );
