@@ -45,11 +45,6 @@ function Table() {
     setSchools((prev) => prev.filter((s) => s.id !== id));
     console.log(schools);
   };
-
-  //학교 순위별 정렬
-  const sortedSchools = useMemo(() => {
-    return [...schools].sort((a, b) => a.rank - b.rank);
-  }, [schools]);
   //기본정보 수정
   const updateBasic = (id, field, value) => {
     setSchools((prev) =>
@@ -73,6 +68,31 @@ function Table() {
     );
     console.log(schools);
   };
+
+  //학교 추가
+  // 학교 추가 함수
+  const addSchool = () => {
+    const inputNames = addName
+      .split("\n")
+      .map((name) => name.trim())
+      .slice(0, 5);
+
+    const existingNames = schools.map((s) => s.name.toLowerCase());
+
+    const newSchools = inputNames
+      .filter((name) => !existingNames.includes(name.toLowerCase()))
+      .map((name) => makeSchool(name, addNation));
+
+    setSchools((prev) => [...prev, ...newSchools]);
+    console.log(schools);
+    setAddName("");
+    setAddNation("미국");
+  };
+
+  //학교 순위별 정렬
+  const sortedSchools = useMemo(() => {
+    return [...schools].sort((a, b) => a.rank - b.rank);
+  }, [schools]);
 
   return (
     <div>
@@ -140,6 +160,7 @@ function Table() {
               setAddNation={setAddNation}
               addName={addName}
               setAddName={setAddName}
+              addSchool={addSchool}
             />
           }
         />
