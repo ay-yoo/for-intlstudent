@@ -1,3 +1,16 @@
+import React from "react";
+
+function Calc() {
+  return (
+    <div style={{ padding: 24 }}>
+      <h1>환율 계산기</h1>
+      <p>임시 비활성화 (API 연결 작업 중)</p>
+    </div>
+  );
+}
+
+export default Calc;
+
 {
   /* 
 import React, { useState, useEffect } from "react";
