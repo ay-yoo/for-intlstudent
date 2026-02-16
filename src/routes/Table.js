@@ -22,14 +22,16 @@ const makeSchool = (name, nation, rank = 1) => ({
 function Table() {
   //*STATE*//
   const [schools, setSchools] = useState([
-    makeSchool("A school", "USA"),
-    makeSchool("B school", "KOREA"),
-    makeSchool("C school", "UK"),
+    makeSchool("Yale university", "USA"),
+    makeSchool("Montana state university", "KOREA"),
+    makeSchool("Brown unviersity", "UK"),
   ]);
   //학교 추가 모달 state
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addName, setAddName] = useState(""); // 학교명
   const [addNation, setAddNation] = useState("USA"); // 국가
+  //로딩 state
+  const [loadingId, setLoadingId] = useState(null);
 
   //*FUNCTION*//
   //학교 추가 클릭시 실행
@@ -96,6 +98,42 @@ function Table() {
   const sortedSchools = useMemo(() => {
     return [...schools].sort((a, b) => a.rank - b.rank);
   }, [schools]);
+  const handleAiFill = async (schoolId) => {
+    try {
+      setLoadingId(schoolId);
+      const school = schools.find((s) => s.id === schoolId);
+
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ schoolName: school.name }),
+      });
+
+      const data = await res.json();
+
+      setSchools((prev) =>
+        prev.map((s) =>
+          s.id === schoolId
+            ? {
+                ...s,
+                fields: {
+                  ...s.fields,
+                  size: data.size,
+                  // data.exchange 대신 data.otherSchool로 수정
+                  otherSchool: data.otherSchool,
+                  weather: data.weather,
+                },
+              }
+            : s,
+        ),
+      );
+    } catch (err) {
+      console.error("AI 자동 채움 실패", err);
+      alert("AI 자동 채움에 실패했습니다 🥲");
+    } finally {
+      setLoadingId(null);
+    }
+  };
 
   return (
     <div>
@@ -149,13 +187,18 @@ function Table() {
                   <button onClick={() => onDelete(s.id)}>삭제</button>
                 </td>
                 <td>
-                  <button onClick={() => onDelete(s.id)}>삭제</button>
+                  <button
+                    onClick={() => handleAiFill(s.id)}
+                    disabled={loadingId === s.id}
+                  >
+                    {loadingId === s.id ? "로딩 중..." : "AI"}
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button onClick={() => onAddOpen()}>학교 추가하기</button>
+
         <Modal
           isOpen={isAddOpen}
           title="학교 추가"
