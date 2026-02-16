@@ -148,6 +148,9 @@ function Table() {
                 <td>
                   <button onClick={() => onDelete(s.id)}>삭제</button>
                 </td>
+                <td>
+                  <button onClick={() => onDelete(s.id)}>삭제</button>
+                </td>
               </tr>
             ))}
           </tbody>
