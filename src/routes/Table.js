@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useMemo } from "react";
 import Modal from "../components/Modal";
 import AddModal from "../components/AddModal";
@@ -45,12 +45,15 @@ function Table() {
     setSchools((prev) => prev.filter((s) => s.id !== id));
     console.log(schools);
   };
-  //기본정보 수정
+  {
+    /*  //기본정보 수정
   const updateBasic = (id, field, value) => {
     setSchools((prev) =>
       prev.map((s) => (s.id === id ? { ...s, [field]: value } : s)),
     );
-  };
+  };*/
+  }
+
   //field 수정
   const updateField = (id, field, value) => {
     setSchools((prev) =>

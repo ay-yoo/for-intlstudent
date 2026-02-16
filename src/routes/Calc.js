@@ -1,3 +1,5 @@
+{
+  /* 
 import React, { useState, useEffect } from "react";
 import "../styles/Calc.css";
 function Calc() {
@@ -83,3 +85,5 @@ function Calc() {
 }
 
 export default Calc;
+ */
+}
