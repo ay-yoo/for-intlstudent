@@ -1,10 +1,18 @@
 function Modal({ isOpen, title, onClose, children }) {
   if (!isOpen) return null;
   return (
-    <div>
-      <h1>{title}</h1>
-      {children}
-      <button onClick={onClose}>닫기</button>
+    <div className="modal-overlay">
+      {" "}
+      <div className="modal-content">
+        {" "}
+        <div className="modal-header">
+          <h2>{title}</h2>
+          <button className="btn-close" onClick={onClose}>
+            &times;
+          </button>{" "}
+        </div>
+        <div className="modal-body">{children}</div>
+      </div>
     </div>
   );
 }

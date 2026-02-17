@@ -22,9 +22,9 @@ const makeSchool = (name, nation, rank = 1) => ({
 function Table() {
   //*STATE*//
   const [schools, setSchools] = useState([
-    makeSchool("Yale university", "USA"),
-    makeSchool("Montana state university", "KOREA"),
-    makeSchool("Brown unviersity", "UK"),
+    makeSchool("Harvard University", "미국"),
+    makeSchool("Yale University", "미국"),
+    makeSchool("Brown University", "미국"),
   ]);
   //학교 추가 모달 state
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -75,7 +75,6 @@ function Table() {
   };
 
   //학교 추가
-  // 학교 추가 함수
   const addSchool = () => {
     const inputNames = addName
       .split("\n")
@@ -119,7 +118,6 @@ function Table() {
                 fields: {
                   ...s.fields,
                   size: data.size,
-                  // data.exchange 대신 data.otherSchool로 수정
                   otherSchool: data.otherSchool,
                   weather: data.weather,
                 },
@@ -136,23 +134,31 @@ function Table() {
   };
 
   return (
-    <div>
-      <h1>희망학교 리스트</h1>
+    <div className="app-container">
+      <div className="header-section">
+        {" "}
+        <h1>희망학교 리스트</h1>
+        <button className="btn btn-primary" onClick={onAddOpen}>
+          학교 추가하기
+        </button>
+      </div>
 
-      <div>
+      <div className="table-card">
         <table>
           <thead>
             <tr>
-              <td>순위</td>
-              <td>학교명</td>
-              <td>국가</td>
-              <td>규모</td>
-              <td>타 학교 제휴</td>
-              <td>날씨</td>
+              <th>순위</th>
+              <th>학교명</th>
+              <th>국가</th>
+              <th>규모</th>
+              <th>타 학교 제휴</th>
+              <th>날씨</th>
 
-              <td>워크스코어</td>
-              <td>국제교류처</td>
-              <td>메모</td>
+              <th>워크스코어</th>
+              <th>국제교류처</th>
+              <th>메모</th>
+              <th></th>
+              <th></th>
             </tr>
           </thead>
 
@@ -169,6 +175,7 @@ function Table() {
                 <td>
                   <input
                     type="text"
+                    className="table-input"
                     value={s.fields.website}
                     onChange={(e) =>
                       updateField(s.id, "website", e.target.value)
@@ -179,41 +186,45 @@ function Table() {
                 <td>
                   <input
                     type="text"
+                    className="table-input"
                     value={s.fields.memo}
                     onChange={(e) => updateField(s.id, "memo", e.target.value)}
                   />
                 </td>
-                <td>
-                  <button onClick={() => onDelete(s.id)}>삭제</button>
-                </td>
-                <td>
+                <td className="action-btns">
                   <button
+                    className="btn btn-ai"
                     onClick={() => handleAiFill(s.id)}
                     disabled={loadingId === s.id}
                   >
                     {loadingId === s.id ? "로딩 중..." : "AI"}
+                  </button>
+                  <button
+                    className="btn btn-delete"
+                    onClick={() => onDelete(s.id)}
+                  >
+                    삭제
                   </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        <Modal
-          isOpen={isAddOpen}
-          title="학교 추가"
-          onClose={onAddClose}
-          children={
-            <AddModal
-              addNation={addNation}
-              setAddNation={setAddNation}
-              addName={addName}
-              setAddName={setAddName}
-              addSchool={addSchool}
-            />
-          }
-        />
       </div>
+      <Modal
+        isOpen={isAddOpen}
+        title="학교 추가"
+        onClose={onAddClose}
+        children={
+          <AddModal
+            addNation={addNation}
+            setAddNation={setAddNation}
+            addName={addName}
+            setAddName={setAddName}
+            addSchool={addSchool}
+          />
+        }
+      />
     </div>
   );
 }

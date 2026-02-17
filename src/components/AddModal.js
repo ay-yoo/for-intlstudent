@@ -1,9 +1,10 @@
 function AddModal({ addNation, setAddNation, addName, setAddName, addSchool }) {
   return (
-    <div>
-      <div>
-        <span>국가</span>
+    <div className="add-form">
+      <div calssName="form-group">
+        <label>국가 선택</label>
         <select
+          className="form-select"
           value={addNation}
           onChange={(e) => setAddNation(e.target.value)}
         >
@@ -37,13 +38,20 @@ function AddModal({ addNation, setAddNation, addName, setAddName, addSchool }) {
         </select>
       </div>
 
-      <textarea
-        rows={6}
-        placeholder={`학교명을 줄바꿈으로 입력 (최대 5개)\n예) Goucher College\nClark University`}
-        value={addName}
-        onChange={(e) => setAddName(e.target.value)}
-      />
-      <button onClick={addSchool}>학교 추가</button>
+      <div className="form-group">
+        <label>학교명 (줄바꿈으로 구분)</label>
+        <textarea
+          className="form-textarea"
+          rows={6}
+          placeholder={`예) Goucher College\nClark University`}
+          value={addName}
+          onChange={(e) => setAddName(e.target.value)}
+        />
+      </div>
+
+      <button className="btn btn-primary btn-full" onClick={addSchool}>
+        리스트에 추가하기
+      </button>
     </div>
   );
 }
