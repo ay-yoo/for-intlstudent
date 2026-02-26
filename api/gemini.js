@@ -28,13 +28,16 @@ export default async function handler(req, res) {
                   text: `
 학교 이름: ${schoolName}
 
+이 학교의 학생회관(Student Union)이나 캠퍼스 센터(Campus Center) 등 학생들이 가장 많이 모이는 중심부의 '정확한 영문 주소'를 찾아주세요.
+
 반드시 아래 형식의 JSON으로만 답하세요.
 설명 없이 JSON만 출력하세요.
 
 {
-  "size": "",
-  "otherSchool": "",
-  "weather": ""
+  "size": "학교 규모(예: 대형, 중형)",
+  "otherSchool": "주변 제휴 학교 정보",
+  "weather": "지역 날씨 특징",
+  "centralAddress": "여기에 정확한 영문 주소 입력"
 }
 `,
                 },

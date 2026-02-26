@@ -97,19 +97,41 @@ function Table() {
   const sortedSchools = useMemo(() => {
     return [...schools].sort((a, b) => a.rank - b.rank);
   }, [schools]);
+
+  //자동입력
   const handleAiFill = async (schoolId) => {
     try {
       setLoadingId(schoolId);
       const school = schools.find((s) => s.id === schoolId);
+      if (!school) return;
 
-      const res = await fetch("/api/gemini", {
+      const geminiRes = await fetch("/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ schoolName: school.name }),
       });
+      const geminiData = await geminiRes.json();
 
-      const data = await res.json();
+      const searchQuery = geminiData.centralAddress || school.name;
 
+      let walkscoreValue = "";
+      const geoRes = await fetch(
+        `/api/geocode?q=${encodeURIComponent(searchQuery)}`,
+      );
+      const geoData = await geoRes.json();
+
+      if (geoData.lat && geoData.lon) {
+        const wsRes = await fetch(
+          `/api/walkscore?lat=${geoData.lat}&lon=${geoData.lon}&address=${encodeURIComponent(geoData.display_name)}`,
+        );
+        const wsData = await wsRes.json();
+
+        if (wsData.status === 1 || wsData.walkscore !== undefined) {
+          walkscoreValue = String(wsData.walkscore);
+        }
+      }
+
+      // 5. 최종 State 업데이트
       setSchools((prev) =>
         prev.map((s) =>
           s.id === schoolId
@@ -117,17 +139,18 @@ function Table() {
                 ...s,
                 fields: {
                   ...s.fields,
-                  size: data.size,
-                  otherSchool: data.otherSchool,
-                  weather: data.weather,
+                  size: geminiData.size || s.fields.size,
+                  otherSchool: geminiData.otherSchool || s.fields.otherSchool,
+                  weather: geminiData.weather || s.fields.weather,
+                  walkscore: walkscoreValue || s.fields.walkscore,
                 },
               }
             : s,
         ),
       );
     } catch (err) {
-      console.error("AI 자동 채움 실패", err);
-      alert("AI 자동 채움에 실패했습니다 🥲");
+      console.error("자동 채움 실패", err);
+      alert("정보를 가져오는 중 오류가 발생했습니다.");
     } finally {
       setLoadingId(null);
     }
